@@ -1,4 +1,4 @@
-package com.advancedjava.advancedjava;
+package com.advancedjava.advancedjava.assignment2;
 
 
 public class HelloData {

@@ -2,14 +2,14 @@ package com.advancedjava.advancedjava.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.advancedjava.advancedjava.HelloRequest;
-import com.advancedjava.advancedjava.HelloResponse;
-import com.advancedjava.advancedjava.RequestCalc;
-import com.advancedjava.advancedjava.RequestProperties;
-import com.advancedjava.advancedjava.RequestSum;
-import com.advancedjava.advancedjava.ResponseCalc;
-import com.advancedjava.advancedjava.ResponseProperties;
-import com.advancedjava.advancedjava.ResponseSum;
+import com.advancedjava.advancedjava.assignment1.HelloRequest;
+import com.advancedjava.advancedjava.assignment2.HelloResponse;
+import com.advancedjava.advancedjava.assignment3.RequestSum;
+import com.advancedjava.advancedjava.assignment3.ResponseSum;
+import com.advancedjava.advancedjava.assignment4.RequestCalc;
+import com.advancedjava.advancedjava.assignment4.ResponseCalc;
+import com.advancedjava.advancedjava.assignment5.RequestProperties;
+import com.advancedjava.advancedjava.assignment5.ResponseProperties;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

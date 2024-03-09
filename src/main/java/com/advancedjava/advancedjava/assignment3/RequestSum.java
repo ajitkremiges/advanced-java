@@ -1,4 +1,4 @@
-package com.advancedjava.advancedjava;
+package com.advancedjava.advancedjava.assignment3;
 
 public class RequestSum {
     private String operation;

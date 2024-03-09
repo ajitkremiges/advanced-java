@@ -1,4 +1,4 @@
-package com.advancedjava.advancedjava;
+package com.advancedjava.advancedjava.assignment4;
 
 
 public class ResponseCalc {

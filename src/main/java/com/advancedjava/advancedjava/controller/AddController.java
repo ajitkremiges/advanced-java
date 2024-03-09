@@ -1,15 +1,17 @@
 package com.advancedjava.advancedjava.controller;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping; 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.advancedjava.advancedjava.Employee;
-import com.advancedjava.advancedjava.EmployeeService;
+import com.advancedjava.advancedjava.entity.Employee;
+import com.advancedjava.advancedjava.service.EmployeeService;
 
 @RestController
 @RequestMapping("/myhr/employee")
@@ -33,4 +35,20 @@ public class AddController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("status: error, message: An unexpected error occurred");
         }
     }
+
+    @GetMapping("/list")
+    public List<Object[]> getEmployeeList() {
+        List<Object[]> employeeList = new ArrayList<>();
+        List<Employee> employees = employeeService.getAllEmployees();
+
+        for (Employee employee : employees) {
+            Object[] employeeData = new Object[2];
+            employeeData[0] = employee.getEmpId();
+            employeeData[1] = employee.getFirstName();
+            employeeList.add(employeeData);
+        }
+
+        return employeeList;
+    }
+
 }

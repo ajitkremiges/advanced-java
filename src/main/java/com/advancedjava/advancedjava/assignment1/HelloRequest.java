@@ -1,6 +1,9 @@
-package com.advancedjava.advancedjava;
+package com.advancedjava.advancedjava.assignment1;
 
 import java.time.LocalDateTime;
+
+import com.advancedjava.advancedjava.assignment2.HelloData;
+
 
 
 public class HelloRequest {
@@ -40,8 +43,6 @@ public class HelloRequest {
     public void setClient_type(String client_type) {
         this.client_type = client_type;
     }
-
-    
     
 }
 

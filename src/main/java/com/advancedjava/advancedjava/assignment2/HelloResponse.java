@@ -1,4 +1,4 @@
-package com.advancedjava.advancedjava;
+package com.advancedjava.advancedjava.assignment2;
 
 import java.time.LocalDateTime;
 
@@ -54,9 +54,5 @@ public class HelloResponse {
     public void setClient_type(String client_type) {
         this.client_type = client_type;
     }
-  
-
-
-  
-    
+      
 }
