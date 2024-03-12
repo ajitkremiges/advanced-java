@@ -5,6 +5,8 @@ import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ public class Department {
 
     }    
     @OneToMany(mappedBy = "department")
+    @JsonIgnore 
     private List<Employee> employees;
 
     public Department(int id) {
