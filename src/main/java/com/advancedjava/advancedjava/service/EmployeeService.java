@@ -14,5 +14,15 @@ public interface EmployeeService {
 
     Map<String, Object> getEmployeeDetails(String employeeId);
 
-}
+    boolean updateEmployeeDetails(String employeeId, Employee updateRequest);
+
+    boolean deleteEmployee(String employeeId);
+
+    boolean copyEmployeeToShadow(String employeeId);
+
+    boolean updateEmployeeDetailsWithShadow(String employeeId, Employee updateRequest);
+    
+    }
+    
+
 

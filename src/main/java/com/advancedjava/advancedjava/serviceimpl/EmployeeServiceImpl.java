@@ -2,6 +2,7 @@ package com.advancedjava.advancedjava.serviceimpl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,7 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.advancedjava.advancedjava.entity.Employee;
+import com.advancedjava.advancedjava.entity.EmployeeShadow;
 import com.advancedjava.advancedjava.repo.EmployeeRepository;
+import com.advancedjava.advancedjava.repo.EmployeeShadowRepository;
 import com.advancedjava.advancedjava.service.EmployeeService;
 
 
@@ -19,6 +22,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeShadowRepository employeeShadowRepository;
 
     @SuppressWarnings("null")
     @Override
@@ -61,14 +67,105 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             return jdbcTemplate.queryForMap(sql, employeeId);
         } catch (EmptyResultDataAccessException e) {
-            // Handle empty result set
             return null;
         } catch (DataAccessException e) {
-            // Handle other data access exceptions
             return null;
         }
     }
-    
 
+
+    /*@Override
+    public boolean updateEmployeeDetails(String employeeId, Employee updateRequest) {
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmpId(employeeId);
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            employee.setFirstName(updateRequest.getFirstName());
+            employee.setDateOfBirth(updateRequest.getDateOfBirth());
+            employee.setDateOfJoining(updateRequest.getDateOfJoining());
+            employee.setSalary(updateRequest.getSalary());
+            employeeRepository.save(employee);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteEmployee(String employeeId) {
+        String sql = "DELETE FROM employee WHERE empid = ?";
+        int affectedRows = jdbcTemplate.update(sql, employeeId);
+        return affectedRows > 0;
+    }*/
+
+    @Override
+    public boolean updateEmployeeDetails(String employeeId, Employee updateRequest) {
+
+        boolean copiedToShadow = copyEmployeeToShadow(employeeId);
+
+        if (!copiedToShadow) {
+            return false; 
+        }
+
+  
+        String updateSql = "UPDATE employee SET fname = ?, dob = ?, doj = ?, salary = ? WHERE empid = ?";
+        try {
+            jdbcTemplate.update(updateSql, updateRequest.getFirstName(), updateRequest.getDateOfBirth(),
+                    updateRequest.getDateOfJoining(), updateRequest.getSalary(), employeeId);
+            return true;
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteEmployee(String employeeId) {
+
+        boolean copiedToShadow = copyEmployeeToShadow(employeeId);
+
+        if (!copiedToShadow) {
+            return false; 
+        }
+
+
+        String deleteSql = "DELETE FROM employee WHERE empid = ?";
+        try {
+            jdbcTemplate.update(deleteSql, employeeId);
+            return true;
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean copyEmployeeToShadow(String employeeId) {
+
+        String insertSql = "INSERT INTO employee_shadow SELECT * FROM employee WHERE empid = ?";
+        try {
+            int affectedRows = jdbcTemplate.update(insertSql, employeeId);
+            return affectedRows > 0;
+        } catch (DataAccessException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateEmployeeDetailsWithShadow(String employeeId, Employee updateRequest) {
+        // Find the employee by ID
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmpId(employeeId);
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            
+            EmployeeShadow employeeShadow = new EmployeeShadow(null, employeeId, employeeId, employeeId, null, null, null, null, null);
+            employeeShadow.setEmpId(employee.getEmpId());
+            employeeShadow.setFirstName(employee.getFirstName());
+
+            employeeShadowRepository.save(employeeShadow);
+            
+            employee.setFirstName(updateRequest.getFirstName());
+            employeeRepository.save(employee);
+            
+            return true;
+        }
+        return false;
+    }
 }
-
+    

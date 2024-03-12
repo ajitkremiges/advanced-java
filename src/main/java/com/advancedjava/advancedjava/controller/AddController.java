@@ -1,6 +1,9 @@
 package com.advancedjava.advancedjava.controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +19,15 @@ import com.advancedjava.advancedjava.service.EmployeeService;
 @RestController
 @RequestMapping("/myhr/employee")
 public class AddController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AddController.class);
+
     @Autowired
     private EmployeeService employeeService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addEmployee(@RequestBody Employee employee) {
+        logger.debug("Received request to add employees");
         try {
             Employee savedEmployee = employeeService.addEmployee(employee);
             return ResponseEntity.ok().body(savedEmployee);
@@ -38,6 +45,7 @@ public class AddController {
 
     @GetMapping("/list")
     public List<Object[]> getEmployeeList() {
+        logger.debug("Received request to list employees");
         List<Object[]> employeeList = new ArrayList<>();
         List<Employee> employees = employeeService.getAllEmployees();
 

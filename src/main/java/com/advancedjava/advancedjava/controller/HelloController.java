@@ -1,5 +1,6 @@
 package com.advancedjava.advancedjava.controller;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.advancedjava.advancedjava.assignment1.HelloRequest;
@@ -28,10 +29,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @PropertySource("classpath:application.properties") 
 public class HelloController {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
     @GetMapping("/hello")
     public HelloResponse sayHello(@RequestParam(value = "name", defaultValue = "World") String name,
                                   @RequestParam(value = "client_type", defaultValue = "web") String clientType) {
+        logger.debug("Received request to get Hello World message");
         HelloResponse response = new HelloResponse();
         response.setStatus("success");
         response.setStatus_code("");
@@ -46,6 +49,7 @@ public class HelloController {
 
     @PostMapping("/hello")
     public HelloResponse sayHello(@RequestBody HelloRequest request) {
+        logger.debug("Received request to print Hello with user name");
         String name = request.getData().getName();
         String clientType = request.getClient_type();
 
@@ -63,6 +67,7 @@ public class HelloController {
 
     @PostMapping("/mysum")
     public ResponseSum calculate(@RequestBody RequestSum request) {
+        logger.debug("Received request to print operation on numbers");
         double num1 = request.getNum1();
         double num2 = request.getNum2();
         String operation = request.getOperation();
@@ -102,6 +107,7 @@ public class HelloController {
 
     @PostMapping("/mycalc")
 public ResponseCalc performCalculation(@RequestBody RequestCalc request) {
+    logger.debug("Received request to print calculation of numbers");
     List<Double> numbers = request.getNumbers();
     String operation = request.getOperation();
     double result;
@@ -151,6 +157,7 @@ public HelloController(Environment environment) {
     @SuppressWarnings("null")
     @PostMapping("/myproperties")
     public ResponseProperties getProperties(@RequestBody RequestProperties request) {
+        logger.debug("Received request to print application properties");
         List<String> propertyIdentifiers = request.getPropertyIdentifiers();
         Map<String, String> propertiesMap = new HashMap<>();
 

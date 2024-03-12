@@ -1,15 +1,14 @@
 package com.advancedjava.advancedjava.repo;
+import com.advancedjava.advancedjava.entity.Employee;
+import com.advancedjava.advancedjava.entity.EmployeeShadow;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.advancedjava.advancedjava.entity.Employee;
-
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeShadowRepository extends JpaRepository<EmployeeShadow, Long> {
 
     Optional<Employee> findByEmpId(String employeeId);
-    
 }
