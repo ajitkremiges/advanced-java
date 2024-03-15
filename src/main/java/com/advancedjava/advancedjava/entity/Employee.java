@@ -1,5 +1,6 @@
 package com.advancedjava.advancedjava.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

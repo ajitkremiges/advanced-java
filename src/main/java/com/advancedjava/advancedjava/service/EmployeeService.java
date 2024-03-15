@@ -1,5 +1,5 @@
 package com.advancedjava.advancedjava.service;
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +9,13 @@ public interface EmployeeService {
     Employee addEmployee(Employee employee);
 
     List<Employee> getAllEmployees();
+
+    String getAllEmployeesAsXml();
+
+    byte[] getAllEmployeesAsXlsx() throws IOException;
+
+    byte[] getAllEmployeesAsPdf() throws IOException;
+
 
     List<Map<String, Object>> getFilteredEmployeeList(String filter);
 

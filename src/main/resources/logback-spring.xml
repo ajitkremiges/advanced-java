@@ -1,0 +1,32 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- Define the logger name and level -->
+    <logger name="com.advancedjava.advancedjava" level="DEBUG" />
+
+    <!-- Appender to output logs to a file -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/path/to/your/logfile.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Include structured data in JSON format -->
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <level>level</level>
+                <logger>logger</logger>
+                <thread>thread</thread>
+                <message>message</message>
+            </fieldNames>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/path/to/your/logfile-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Root logger to use the FILE appender -->
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

@@ -1,19 +1,28 @@
 package com.advancedjava.advancedjava.serviceimpl;
-
+import org.springframework.stereotype.Service;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import org.apache.poi.ss.usermodel.Row;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.advancedjava.advancedjava.entity.Employee;
 import com.advancedjava.advancedjava.entity.EmployeeShadow;
 import com.advancedjava.advancedjava.repo.EmployeeRepository;
 import com.advancedjava.advancedjava.repo.EmployeeShadowRepository;
 import com.advancedjava.advancedjava.service.EmployeeService;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 
 @Service
@@ -35,6 +44,66 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
+    }
+
+    @Override
+    public String getAllEmployeesAsXml() {
+        List<Employee> employees = getAllEmployees();
+        StringBuilder xmlBuilder = new StringBuilder();
+        xmlBuilder.append("<employees>");
+        for (Employee employee : employees) {
+            xmlBuilder.append("<employee>");
+            xmlBuilder.append("<id>").append(employee.getId()).append("</id>");
+            xmlBuilder.append("<name>").append(employee.getFirstName()).append("</name>");
+   
+            xmlBuilder.append("</employee>");
+        }
+        xmlBuilder.append("</employees>");
+        return xmlBuilder.toString();
+    }
+
+
+    @Override
+    public byte[] getAllEmployeesAsXlsx() throws IOException {
+        List<Employee> employees = getAllEmployees();
+        
+        if (employees == null || employees.isEmpty()) {
+            throw new IOException("No employees found");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Employees");
+            int rowNum = 0;
+            Row headerRow = sheet.createRow(rowNum++);
+            headerRow.createCell(0).setCellValue("ID");
+            headerRow.createCell(1).setCellValue("First Name");
+            for (Employee employee : employees) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(employee.getId());
+                row.createCell(1).setCellValue(employee.getFirstName());
+            }
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
+        }
+    }
+    
+    @Override
+    public byte[] getAllEmployeesAsPdf() throws IOException {
+        List<Employee> employees = employeeRepository.findAll(); // Fetching employees from the database
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            Document document = new Document();
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+            for (Employee employee : employees) {
+                document.add(new Paragraph("Employee ID: " + employee.getId()));
+                document.add(new Paragraph("Employee Name: " + employee.getFirstName()));
+                document.add(new Paragraph("\n"));
+            }
+            document.close();
+            return outputStream.toByteArray();
+        } catch (DocumentException e) {
+            throw new IOException("Error generating PDF", e);
+        }
     }
 
    @Autowired
@@ -72,29 +141,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             return null;
         }
     }
-
-
-    /*@Override
-    public boolean updateEmployeeDetails(String employeeId, Employee updateRequest) {
-        Optional<Employee> optionalEmployee = employeeRepository.findByEmpId(employeeId);
-        if (optionalEmployee.isPresent()) {
-            Employee employee = optionalEmployee.get();
-            employee.setFirstName(updateRequest.getFirstName());
-            employee.setDateOfBirth(updateRequest.getDateOfBirth());
-            employee.setDateOfJoining(updateRequest.getDateOfJoining());
-            employee.setSalary(updateRequest.getSalary());
-            employeeRepository.save(employee);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean deleteEmployee(String employeeId) {
-        String sql = "DELETE FROM employee WHERE empid = ?";
-        int affectedRows = jdbcTemplate.update(sql, employeeId);
-        return affectedRows > 0;
-    }*/
 
     @Override
     public boolean updateEmployeeDetails(String employeeId, Employee updateRequest) {
@@ -167,5 +213,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return false;
     }
-}
+}    
     

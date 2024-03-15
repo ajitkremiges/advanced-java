@@ -2,12 +2,22 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{ISO8601} user=%X{userid} api=%X{api} status=%X{status} error_code=%X{error_code} error_message=%X{error_message} client_reqid=%X{client_reqid} req=%X{req}%n"/>
+            <PatternLayout pattern="%d{ISO8601}|user=%X{userid}|api=%X{api}|status=%X{status}|error_code=%X{error_code}|error_message=%X{error_message}|client_reqid=%X{client_reqid}|req=%m%n"/>
         </Console>
+        <RollingFile name="RollingFile" fileName="logs/myapp.log"
+                     filePattern="logs/myapp-%d{MM-dd-yyyy}.log.gz">
+            <PatternLayout>
+                <Pattern>%d{ISO8601}|user=%X{userid}|api=%X{api}|status=%X{status}|error_code=%X{error_code}|error_message=%X{error_message}|client_reqid=%X{client_reqid}|req=%m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>
